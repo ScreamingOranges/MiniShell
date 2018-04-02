@@ -1,0 +1,5 @@
+./loop -s 500 -c 30&
+./loop -s 600 -c 30&
+./loop -s 700 -c 30&
+./loop -s 800 -c 30&
+barrier
