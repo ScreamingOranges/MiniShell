@@ -9,8 +9,7 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <errno.h>
-
+/*#include <errno.h>*/
 
 int REDIRECT = 0;/*for redirection*/
 
@@ -239,9 +238,10 @@ char* getBASH(FILE* file)
 int executeCommand(char **tokens)
 {
 	int barrier =0;
+	int EXIT =0;
 	if(strcmp(tokens[0],"quit")==0||strcmp(tokens[0],"exit")==0)
 	{		
-		return 1;
+		EXIT =1;
 	}
 
 	if(strcmp(tokens[0],"barrier&")==0)
@@ -264,7 +264,8 @@ int executeCommand(char **tokens)
 	{
 		if(barrier ==1)	
 			exit(0);
-		
+		if(EXIT==1)
+			exit(0);
 		if(REDIRECT == 1)/*for > redirection*/
 		{
 			int i;
@@ -301,6 +302,11 @@ int executeCommand(char **tokens)
 		}
 		if(barrier ==1)
 			while((pidCheck = waitpid(-1, &status, 0)) != -1);
+		if(EXIT == 1)
+		{
+			while((pidCheck = waitpid(-1, &status, 0)) != -1);
+			return 1;
+		}
 	}	
 	
 	return 0;
