@@ -11,6 +11,7 @@
 #include <fcntl.h>
 /*#include <errno.h>*/
 
+int BACK=0;
 int REDIRECT = 0;/*for redirection*/
 
 int isWhiteSpace(char *command)/*checks for whitespace*/
@@ -128,8 +129,9 @@ char** noSpace(char **tokens)
 	return nospaceTokens;
 }
 
-int isBackground(char **tokens)/*return 1 if there is a &, 0 if not*/
+void isBackground(char **tokens)/*return 1 if there is a &, 0 if not*/
 {	
+	BACK=0;
 /*	printf("in isBackground\n");*/
 	int count=0;/*for how many elements*/
 	int i;
@@ -138,11 +140,10 @@ int isBackground(char **tokens)/*return 1 if there is a &, 0 if not*/
 
 	if(tokens[count-1][strlen(tokens[count-1])-1] == '&')
 	{
-/*		printf("there is a & sign\n\n");*/
-		return 1;
+		tokens[count-1][strlen(tokens[count-1])-1]='\0';
+		BACK=1;
 	}
 /*	printf("leaving isBackground\n");*/
-	return 0;
 }
 
 void interactiveMode(void)/*driver for interactive mode*/
@@ -294,7 +295,7 @@ int executeCommand(char **tokens)
 	}
 	else/*parent*/
 	{
-		if(isBackground(tokens)==0)/*checks if there is a & sign,if no waits if yes continue*/
+		if(BACK==0)/*checks if there is a & sign,if no waits if yes continue*/
 		{
 /*			printf("waiting\n\n");*/
 			waitpid(pidCheck,&status,0);
